@@ -15,8 +15,9 @@ export async function callGimini(
   formData: FormData
 ): Promise<TaskState> {
   const topic = formData.get("topic")?.toString();
-  if (!topic) return { tasks: [], error: "No topic provided" };
-
+  if (!topic || topic.trim() === "") {
+  return { tasks: [], error: "No topic provided" };
+}
   const prompt = `Generate a list of 5 concise, actionable tasks to learn about ${topic}. Return only the tasks, no numbering or formatting.`;
 
   try {
@@ -33,6 +34,16 @@ export async function callGimini(
     return { tasks };
   } catch (error) {
     console.error(error);
-    return { tasks: [], error: "Something went wrong." };
+    if (error instanceof Error) {
+      return {
+        tasks: [],
+        error: error.message,
+      };
+    } else {
+      return {
+        tasks: [],
+        error: "An unexpected error occurred",
+      };
+    }
   }
 }
