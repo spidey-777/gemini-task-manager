@@ -1,4 +1,3 @@
-"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -9,8 +8,19 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import { currentUser } from "@clerk/nextjs/server";
+import { createUserIfNotExists } from "@/lib/createUserIfNotExist";
 
-function Header() {
+ async function  Header() {
+   const user = await currentUser();
+  if (user) {
+    await createUserIfNotExists({
+      id: user.id,
+      email: user.emailAddresses[0].emailAddress,
+      name: user.firstName ?? "",
+    });
+  }
+
   return (
     <header className="flex w-full items-center justify-between px-6 py-3 bg-gray-500 shadow-sm">
       <div>
@@ -35,6 +45,7 @@ function Header() {
               },
             }}
           />
+          
         </SignedIn>
       </div>
     </header>

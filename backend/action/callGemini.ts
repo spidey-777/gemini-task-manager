@@ -14,6 +14,8 @@ export async function callGimini(
   _prevState: TaskState,
   formData: FormData
 ): Promise<TaskState> {
+
+
   const topic = formData.get("topic")?.toString();
   if (!topic || topic.trim() === "") {
   return { tasks: [], error: "No topic provided" };
